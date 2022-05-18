@@ -41,13 +41,14 @@ static void FT_STRDUP_EXPECT(char *str, long sabote) {
 
 
     test = malloc(sizeof(struct test_struct));
-
+/*
     if (sabote) {
         setrlimit(RLIMIT_AS, &(struct rlimit){0, RLIM_INFINITY});
         while (malloc(5) != NULL);
         while (malloc(1024) != NULL);
         while (malloc(500) != NULL);
     }
+    */
     test->expected = strdup(str);
     test->answer = 0;
     test->test = str;
@@ -55,7 +56,7 @@ static void FT_STRDUP_EXPECT(char *str, long sabote) {
     test->segfault = TEST_SEGFAULT(str);
     if (!test->segfault)
         test->answer = ft_strdup(str);
-    setrlimit(RLIMIT_AS, &(struct rlimit){RLIM_INFINITY , RLIM_INFINITY});
+   // setrlimit(RLIMIT_AS, &(struct rlimit){RLIM_INFINITY , RLIM_INFINITY});
     if (sabote && !test->segfault) {
         OK;
         free(test);

@@ -34,7 +34,7 @@ ft_putnbr:					; ft_putnbr (LINUX)
     dec rbx                 ; buff[idx] = '-'
     mov byte [rsp + rbx], '-'
     exit:
-    mov rax, 0x01
+    mov rax, SYS_WRITE
     mov rdi, 1
     mov rsi, rsp
     add rsi, rbx
