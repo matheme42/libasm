@@ -1,43 +1,37 @@
+;------------------------------------------------------------------------------;
+; ssize_t  ft_read(int fd, void *buf, size_t count);                           ;
+;                                                                              ;
+; 1st arg:  rdi  file descriptor, output location STDIN (0)                    ;
+; 2nd arg:  rsi  buffer (address of where to place data)                       ;
+; 3th arg:  rdx  count (max numb of char to read)                              ;
+; return :  rax  sys_read(0)                                                   ;
+;------------------------------------------------------------------------------;
+
 section .text
-	global ft_read
-	global _ft_read
-	extern ERRNO
+	global ft_read		; export ft_read (LINUX)
+	global _ft_read		; export ft_read (MACOSX)
+	extern ERRNO		; include ___errno(Macosx) or  _get_errno_location(Linux)
 
-; ft_read(int fd, char *buff, int size)
-_ft_read:
-	pushf
-	push rbp
-	mov rbp, rsp
-	mov rax, SYS_READ         	;   put the code of read in rax register
-	syscall
-	jnc exit_mac
-	read_errno_mac:
-	push rax
-	call ERRNO
-	mov rbx, rax
-	pop rax
-	mov [rbx], rax
-	mov rax, -1
-	exit_mac:
-	pop rbp
-	popf
-	ret
+_ft_read:				; ft_read (MACOSX)
+	pushf				; push flag
+	mov rax, SYS_READ   ; prepare syscall 0x2000003
+	syscall				; write(rdi, rsi, rdx)
+	jnc exit			; if (!error) jmp exit
+	jmp exit_errno		; jmp errno
 
-ft_read:
-	pushf
-	mov rax, SYS_READ
-	syscall
-	cmp rax, 0
-	jns exit
-	read_errno:
-	cmp rax, 0
-	jns ft_write_absolute
-    neg rax    			; get absolute value of syscall return
-	ft_write_absolute:
+ft_read:				; ft_read (LINUX)
+	pushf				; push flag
+	mov rax, SYS_READ	; prepare syscall 0x01
+	syscall				; ret = write(rdi, rsi, rdx)
+	cmp rax, 0			; cmp (ret, 0)
+	jns exit			; (ret < 0) jmp exit
+    neg rax    			; ret = -ret
+
+exit_errno:
     mov rdi, rax
-    call ERRNO			; get the location of errno
-    mov [rax], rdi  	; set the value of errno
-	mov rax, -1
-	exit :
-	popf
-	ret
+    call ERRNO			; void *errno = ___errno()  errno = _get_errno_location()
+    mov [rax], rdi  	; *errno = ret
+	mov rax, -1			; ret = -1
+exit :
+	popf				; pop flags
+	ret					; return (ret)
