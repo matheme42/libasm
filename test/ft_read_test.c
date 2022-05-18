@@ -59,21 +59,23 @@ static void FT_READ_EXPECT(int filed, char *str, int size) {
     test->len = size;
     errno = 0;
     bzero(test->realbuff, sizeof(test->realbuff));
-	write(fd[1], str, size);
-    test->expected_errno = errno;
-	test->expected = read(fd[0], test->realbuff, size);
+
 	write(fd[1], str, size);
     char buffseg[1000];
+    test->segfault = 0;
     test->segfault = TEST_SEGFAULT(fd[0], buffseg, size);
     test->next = NULL;
-   
     if (!test->segfault) {
         write(fd[1], str, size);
-        errno = 0;
-        bzero(test->readbuff, sizeof(test->readbuff));
-        test->answer = ft_read(fd[0], test->readbuff, size);
-        test->answer_errno = errno;
+        test->expected_errno = errno;
+        test->expected = ft_read(fd[0], test->realbuff, size);
     }
+    write(fd[1], str, size);
+    errno = 0;
+    bzero(test->readbuff, sizeof(test->readbuff));
+    test->answer = read(fd[0], test->readbuff, size);
+    test->answer_errno = errno;
+
     if (!filed) {
         close(fd[0]);
         close(fd[1]);
@@ -112,11 +114,11 @@ static void ft_read_error() {
 static int ft_read_test_list() {
     FT_READ_EXPECT(0, "qdsztzv\0", -5);
     FT_READ_EXPECT(0, "adsaddc", 3);
-    FT_READ_EXPECT(0, "azerty", 5);
     FT_READ_EXPECT(95, "azerty", 5);
     FT_READ_EXPECT(123193, "azerty", 5);
     FT_READ_EXPECT(95, "azdafaeera1418 \tvzzFfj\0", 5);
     FT_READ_EXPECT(0, "\0\0\0\0\0\0\0", 5);
+    FT_READ_EXPECT(0, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 10);
     FT_READ_EXPECT(1293532, NULL, 5);
     FT_READ_EXPECT(17, "azerty", 5);
     FT_READ_EXPECT(-5, "azerty", 5);
