@@ -111,7 +111,6 @@ static void ft_read_error() {
 
 static int ft_read_test_list() {
     FT_READ_EXPECT(0, "qdsztzv\0", -5);
-    FT_READ_EXPECT(0, NULL, 5);
     FT_READ_EXPECT(0, "adsaddc", 3);
     FT_READ_EXPECT(0, "azerty", 5);
     FT_READ_EXPECT(95, "azerty", 5);
@@ -122,6 +121,7 @@ static int ft_read_test_list() {
     FT_READ_EXPECT(17, "azerty", 5);
     FT_READ_EXPECT(-5, "azerty", 5);
     FT_READ_EXPECT(-51319513, "azerty", 5);
+    FT_READ_EXPECT(0, NULL, -5);
     FT_READ_EXPECT(0, "\0", 1);
     FT_READ_EXPECT(0, "\033[31;1m colorized text", 30);
     FT_READ_EXPECT(0, " tescwxgzeqcq<f hezqq<kcfhtext", 2148);
