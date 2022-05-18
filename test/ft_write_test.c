@@ -111,8 +111,8 @@ static void ft_write_error() {
 }
 
 static int ft_write_test_list() {
-    FT_WRITE_EXPECT(0, "qdsztzv\0", 5);
-    FT_WRITE_EXPECT(0, "azersqvzqqty", 91251);
+    FT_WRITE_EXPECT(0, "qdsztzv\0", 3;
+    FT_WRITE_EXPECT(0, "azersqvzqqty", 0);
     FT_WRITE_EXPECT(0, NULL, 5);
     FT_WRITE_EXPECT(0, "adsaddc", 3);
     FT_WRITE_EXPECT(95, "azerty", 5);
