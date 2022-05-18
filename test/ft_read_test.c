@@ -62,9 +62,9 @@ static void FT_READ_EXPECT(int filed, char *str, int size) {
 	write(fd[1], str, size);
     test->expected_errno = errno;
 	test->expected = read(fd[0], test->realbuff, size);
-
 	write(fd[1], str, size);
-    test->segfault = TEST_SEGFAULT(fd[0], str, size);
+    char buffseg[1000];
+    test->segfault = TEST_SEGFAULT(fd[0], buffseg, size);
     test->next = NULL;
    
     if (!test->segfault) {
